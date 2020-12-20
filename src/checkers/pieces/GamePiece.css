@@ -1,0 +1,30 @@
+.piece {
+	margin: auto;
+	width: 80%;
+	height: 80%;
+	border-radius: 50%
+}
+
+.piece:hover {
+	background-color: #10e2e2;
+}
+
+.red {
+	background: #FF0000;
+	border-color: #5f0303;
+}
+
+.black {
+	background: #000000;
+	border-color: #000000;
+}
+
+.selected {
+	background-color: #5e00b1;
+	border-color: #6714b1;
+}
+
+.disabled:hover {
+	background-color: #ffffff;
+	opacity: 0.1;
+}

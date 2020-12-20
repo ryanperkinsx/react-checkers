@@ -1,0 +1,35 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+}
+
+ol, ul {
+    padding-left: 30px;
+}
+
+.status {
+    margin-bottom: 10px;
+}
+
+.kbd-navigation .square:focus {
+    background: #ddd;
+}
+
+.game {
+    display: flex;
+    flex-direction: row;
+}
+
+.game-info {
+    margin-left: 20px;
+}
+
+.game-menu {
+    margin-left: 210px;
+}
+
+.divider{
+    width:8px;
+    height:auto;
+    display:inline-block;
+}

@@ -1,0 +1,22 @@
+.board-row:after {
+	clear: both;
+	content: "";
+	display: table;
+}
+
+.odd {
+	background: #F0D2B4;
+	border: 1px solid #4c2e06;
+	float: left;
+	line-height: 34px;
+	height: 64px;
+	margin: auto;
+	padding: 0;
+	width: 64px;
+	display: flex;
+	align-items: center
+}
+
+.even {
+	background: #ba7a3a;
+}
