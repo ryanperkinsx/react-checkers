@@ -4,7 +4,7 @@ import './Game.css';
 // ==================== END IMPORTS ====================
 
 export default function GameMenu(props) {
-	const { back, reset, forward }= props
+	const { pending, back, reset, forward }= props
 
 	// ==================== END VARIABLES ====================
 
@@ -25,11 +25,11 @@ export default function GameMenu(props) {
 
 	return (
 		<div className={"game-menu"}>
-			<button onClick={handleMoveBack}> {"<"} </button>
+			<button onClick={handleMoveBack} disabled={pending} > {"<"} </button>
 			<div className={"divider"} />
-			<button onClick={handleClick}> reset </button>
+			<button onClick={handleClick} disabled={pending} > reset </button>
 			<div className={"divider"} />
-			<button onClick={handleMoveForward}> > </button>
+			<button onClick={handleMoveForward} disabled={pending} > > </button>
 		</div>
 	);
 }

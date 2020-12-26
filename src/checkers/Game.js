@@ -51,172 +51,162 @@ export default function Game() {
         setSelection(null);
     }
 
-    const jumps = (x, y, value, mirror) => {
-        if (value === 0) {
-            if (mirror[x + 1][y + 1] === 1) {
-                if (x + 2 < 8 && y + 2 < 8) {
-                    if (mirror[x + 2][y + 2] === null) {
-                        mirror[x + 2][y + 2] = 2;
-                        jumps(x + 2, y + 2, value, mirror);
-                    }
-                }
-            }
-            if (mirror[x + 1][y - 1] === 1) {
-                if (x + 2 < 8 && y - 2 > -1) {
-                    if (mirror[x + 2][y - 2] === null) {
-                        mirror[x + 2][y - 2] = 2;
-                        jumps(x + 2, y - 2, value, mirror);
-                    }
-                }
-            }
-        }
-        else if (value === 1) {
-            if (mirror[x - 1][y + 1] === 0) {
-                if (x - 2 > -1 && y + 2 < 8) {
-                    if (mirror[x - 2][y + 2] === null) {
-                        mirror[x - 2][y + 2] = 2;
-                        jumps(x - 2, y + 2, value, mirror);
-                    }
-                }
-            }
-            if (mirror[x - 1][y - 1] === 0) {
-                if (x - 2 > -1 && y - 2 > -1) {
-                    if (mirror[x - 2][y - 2] === null) {
-                        mirror[x - 2][y - 2] = 2;
-                        jumps(x - 2, y - 2, value, mirror);
-                    }
-                }
-            }
-        }
+    const calculateJumps = (x, y, value, mirror) => {
+        // set the piece
+        if (x < 8 && x > -1 && y < 8 && y > -1)
+            if (mirror[x][y] === null)
+                mirror[x][y] = 2;
+            else return;
 
-    }
-
-    const calculateMoves = (x, y, value, mirror) => {
+        // black piece
         if (value === 0) {
+            // to the right
             if (x + 1 < 8 && y + 1 < 8) {
-                if (mirror[x + 1][y + 1] === null)
-                    mirror[x + 1][y + 1] = 2;
                 if (mirror[x + 1][y + 1] === 1) {
-                    if (x + 2 < 8 && y + 2 < 8) {
-                        if (mirror[x + 2][y + 2] === null) {
-                            mirror[x + 2][y + 2] = 2;
-                            jumps(x + 2, y + 2, value, mirror);
-                        }
-                    }
+                    calculateJumps(x + 2, y + 2, value, mirror);
                 }
             }
+            // to the left
             if (x + 1 < 8 && y - 1 > -1) {
-                if (mirror[x + 1][y - 1] === null)
-                    mirror[x + 1][y - 1] = 2;
                 if (mirror[x + 1][y - 1] === 1) {
-                    if (x + 2 < 8 && y - 2 > -1) {
-                        if (mirror[x + 2][y - 2] === null) {
-                            mirror[x + 2][y - 2] = 2;
-                            jumps(x + 2, y - 2, value, mirror);
-                        }
-                    }
+                    calculateJumps(x + 2, y - 2, value, mirror);
                 }
             }
         } else if (value === 1) {
+            // to the right
             if (x - 1 > -1 && y + 1 < 8) {
-                if (mirror[x - 1][y + 1] === null)
-                    mirror[x - 1][y + 1] = 2;
                 if (mirror[x - 1][y + 1] === 0) {
-                    if (x - 2 > -1 && y + 2 < 8) {
-                        if (mirror[x - 2][y + 2] === null) {
-                            mirror[x - 2][y + 2] = 2;
-                            jumps(x - 2, y + 2, value, mirror);
-                        }
-                    }
+                    calculateJumps(x - 2, y + 2, value, mirror);
                 }
             }
-            if (x - 1 > -1 && y - 1 < 8) {
-                if (mirror[x - 1][y - 1] === null)
-                    mirror[x - 1][y - 1] = 2;
+            // to the left
+            if (x - 1 > -1 && y - 1 > -1) {
                 if (mirror[x - 1][y - 1] === 0) {
-                    if (x - 2 > -1 && y - 2 < 8) {
-                        if (mirror[x - 2][y - 2] === null) {
-                            mirror[x - 2][y - 2] = 2;
-                            jumps(x - 2, y - 2, value, mirror);
-                        }
-                    }
+                    calculateJumps(x - 2, y - 2, value, mirror);
                 }
             }
+        } // red piece
+    }
+
+    const calculateMoves = (x, y, value, mirror) => {
+        if (mirror) {
+           // black piece
+            if (value === 0) {
+                // right
+                if (x + 1 < 8 && y + 1 < 8) {
+                    // empty
+                    if (mirror[x + 1][y + 1] === null)
+                        mirror[x + 1][y + 1] = 2;
+                    // red opponent
+                    else if (mirror[x + 1][y + 1] === 1)
+                        calculateJumps(x + 2, y + 2, value, mirror);
+                }
+                // left
+                if (x + 1 < 8 && y - 1 > -1) {
+                    // empty
+                    if (mirror[x + 1][y - 1] === null)
+                        mirror[x + 1][y - 1] = 2;
+                    // red opponent
+                    else if (mirror[x + 1][y - 1] === 1)
+                        calculateJumps(x + 2, y - 2, value, mirror);
+                }
+            } else if (value === 1) {
+                // right
+                if (x - 1 > -1 && y + 1 < 8) {
+                    // empty
+                    if (mirror[x - 1][y + 1] === null)
+                        mirror[x - 1][y + 1] = 2;
+                    // black opponent
+                    else if (mirror[x - 1][y + 1] === 0)
+                        calculateJumps(x - 2, y + 2, value, mirror);
+                }
+                // left
+                if (x - 1 > -1 && y - 1 > -1) {
+                    // empty
+                    if (mirror[x - 1][y - 1] === null)
+                        mirror[x - 1][y - 1] = 2;
+                    // black opponent
+                    else if (mirror[x - 1][y - 1] === 0)
+                        calculateJumps(x - 2, y - 2, value, mirror);
+                }
+            } // red piece
         }
     }
 
-    const movePiece = (x, y, value) => {
+    const movePiece = (x, y) => {
+        // clicked the old piece
+        if (selection.x === x && selection.y === y) {
+            // alert("doth clicked me old piece")
+            const past = cloneDeep(history.slice(0, move));
+
+            // clean up, clean up, everybody do your share
+            setHistory(past);
+            setSelection(null);
+            setMove(move - 1);
+            setPending(false);
+
+            return;
+        }
+
+        // modifier so the loop can be generic
+        const xMod = selection.value === 0 ? 1 : -1;
+
+        history[move].board = cloneDeep(history[move - 1].board);
+
+        while (selection.x !== x) {
+            // the y value being === to the selected piece is an interesting corner case
+            // I decided to just have enough safe guards for a default -- easy way out? kinda
+            if (selection.y + 1 < 8 && y >= selection.y) {
+                // alert("doth clicked a piece down/up to the right ")
+                history[move].board[selection.x + xMod][selection.y + 1] = selection.value;
+                history[move].board[selection.x][selection.y] = null;
+                selection.y = selection.y + 1;
+                selection.x = selection.x + xMod;
+                continue;
+            }
+
+            if (selection.y - 1 > -1 && y <= selection.y) {
+                // alert("doth clicked a piece down/up to the left ")
+                history[move].board[selection.x + xMod][selection.y - 1] = selection.value;
+                history[move].board[selection.x][selection.y] = null;
+                selection.y = selection.y - 1;
+                selection.x = selection.x + xMod;
+                continue;
+            }
+        }
+
+        setHistory(history);
+        setSelection(null);
+        setPending(false);
+    }
+
+    const handleClick = (x, y, value) => {
+        // get a current copy of the history
         const past = move + 1 !== history.length
             ? history.slice(0, move + 1)
             : [...history];
 
+        // if no piece is currently selected
         if (!selection) {
+            // get a current copy of the board
             const mirror = cloneDeep(past[move].board);
 
+            // change the button
             mirror[x][y] = 2;
+
+            // select the possible moves
             calculateMoves(x, y, value, mirror);
 
-            setHistory([...past, {board: mirror}]);
             setSelection({ x: x, y: y, value: value});
-            setMove(move + 1);
             setPending(true);
+            setHistory([...past, {board: mirror}]);
+            setMove(move + 1);
         } else {
-            if (selection.x === x && selection.y === y) {
-                // alert("doth clicked me old piece")
-                const past = cloneDeep(history.slice(0, move));
-                setHistory(past);
-                setSelection(null);
-                setMove(move - 1);
-                setPending(false);
-                return;
-            } else if (selection.value === 0) {
-                if (y === selection.y + 1) {
-                    // alert("doth clicked a new black piece down to the right ")
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x][y] = 0
-                } else if (y === selection.y - 1) {
-                    // alert("doth clicked a new black piece down to the left ")
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x][y] = 0
-                } else if (y === selection.y + 2) {
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x - 1][y - 1] = null
-                    history[move].board[x][y] = 0
-                } else if (y === selection.y - 2) {
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x - 1][y + 1] = null
-                    history[move].board[x][y] = 0
-                }
-            } else if (selection.value === 1) {
-                if (y === selection.y + 1) {
-                    // alert("doth clicked a new red piece up to the right ")
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x][y] = 1
-                } else if (y === selection.y - 1) {
-                    // alert("doth clicked a new red piece up to the left ")
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x][y] = 1
-                } else if (y === selection.y + 2) {
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x + 1][y - 1] = null
-                    history[move].board[x][y] = 1
-                } else if (y === selection.y - 2) {
-                    history[move].board = cloneDeep(history[move - 1].board);
-                    history[move].board[x + 1][y + 1] = null
-                    history[move].board[x][y] = 1
-                }
-            }
-
-            history[move].board[selection.x][selection.y] = null;
-            setHistory(history);
-            setSelection(null);
-            setPending(false);
+            movePiece(x, y, value)
         }
     }
 
     // ==================== END UTILITIES ====================
-
-    console.log(history)
 
     return (
         <div>
@@ -225,7 +215,7 @@ export default function Game() {
                     <Board board={history[move].board}
                            pending={pending}
                            move={move}
-                           onClick={(x, y, value) => movePiece(x, y, value)}
+                           onClick={(x, y, value) => handleClick(x, y, value)}
                     />
                 </div>
                 <div className="game-info">
@@ -234,7 +224,7 @@ export default function Game() {
                 </div>
             </div>
             <br />
-            <GameMenu back={back} reset={reset} forward={forward}  />
+            <GameMenu pending={pending} back={back} reset={reset} forward={forward}  />
         </div>
     );
 }

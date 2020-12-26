@@ -37,6 +37,15 @@ I'm making Checkers, here is where I will keep a log of my tasks:
   + ended up just adding menu buttons to utilize the history
   + I guess adding a turn feature is next
   + then the interactions after that? te corner cases if you will...
+  
++ task_0005: wrap it up
+  + a simple game is possible. 
+  + jumps work
+  + double jumps don't
+  + to finish up, I need to:
+    + make double/triple jumps work --> done
+    + add king pieces --> in progress... 
+    + declare a winner
 
 ## Available Scripts
 
