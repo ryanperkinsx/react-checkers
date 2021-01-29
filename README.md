@@ -2,50 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Checkers 
-
-I'm making Checkers, here is where I will keep a log of my tasks:
-
-+ task_0001: convert the current game board to use the useState React Hook 
-  + https://reactjs.org/docs/hooks-intro.html
-  + https://www.youtube.com/watch?v=dpw9EHDh2bM&feature=emb_logo
-  + all_done: project structure looks good too :D
-    
-
-+ task_0002: display a red circle for 'r' and a black circle for 'b'
-  + the shapes of CSS: https://css-tricks.com/the-shapes-of-css/
-  + all_done: the board is now alternating colors, changed the board squares from buttons to
-  \<div />'s and made the actual game pieces buttons... everything is colored correctly 
-    
-
-+ task_0003: make the game pieces move-able around the board
-  + I added the history log successfully
-  + right now it just makes the piece null, I need to give it it's move options
-  + stopping @ 6:17:39 PM on 12/13/20: 
-    + I have the pieces interact-able where I can select a button and it highlights the possible 
-    moves but it doesn't disable the other buttons and it craps out if you click \[5]\[7]
-    + this stuff is kinda sorta tough :D
-  + started back up @ 2:12:31 PM on 12/19/20:
-    + more confidence
-  + you can select and de-select pieces in traditional checkers fashion
-  + now add the movement part
-  + ok.. all of that is done.. the piece can move with collision now.. mostly game logic at this point?
-  + fix the broken board --> no more out of bounds on the side, top and bottom yes but they'll become kings
-  
-
-+ task_0004: eh.. not sure what next
-  + ended up just adding menu buttons to utilize the history
-  + I guess adding a turn feature is next
-  + then the interactions after that? te corner cases if you will...
-  
-+ task_0005: wrap it up
-  + a simple game is possible. 
-  + jumps work
-  + double jumps don't
-  + to finish up, I need to:
-    + make double/triple jumps work --> done
-    + add king pieces --> in progress... 
-    + declare a winner
+## Checkers
 
 ## Available Scripts
 

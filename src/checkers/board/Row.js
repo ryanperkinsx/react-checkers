@@ -13,15 +13,15 @@ export default function Row(props) {
 	return (
 		<div>
 			{
-				rowArray.map((val, index) => {
+				rowArray.map((value, index) => {
 					return (
 						<Square key={(rowIndex + 1) * index}
 								pending={pending}
 								move={move}
-								onClick={(x, y, value) => onClick(x, y, value)}
+								onClick={(x, y, piece) => onClick(x, y, piece)}
 								rowIndex={rowIndex}
 								index={index}
-								value={val}
+								piece={value}
 						/>
 					);
 				})

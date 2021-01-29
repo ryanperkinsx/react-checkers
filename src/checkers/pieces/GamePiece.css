@@ -10,18 +10,36 @@
 }
 
 .red {
-	background: #FF0000;
+	background: #ff0000;
 	border-color: #5f0303;
 }
 
 .black {
 	background: #000000;
-	border-color: #000000;
+	border-color: #373737;
 }
 
 .selected {
 	background-color: #5e00b1;
 	border-color: #6714b1;
+}
+
+.red-king {
+	background: #ffff00 url("crown.png") no-repeat center;
+	border-color: #ff0000;
+	border-width: 8px;
+}
+
+.black-king {
+	background: #ffff00 url("crown.png") no-repeat center;
+	border-color: #373737;
+	border-width: 8px;
+}
+
+.selected-king {
+	background: #ffff00 url("crown.png") no-repeat center;
+	border-color: #791eca;
+	border-width: 8px;
 }
 
 .disabled:hover {

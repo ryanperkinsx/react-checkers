@@ -4,7 +4,7 @@ import 'fontsource-roboto';
 import GamePiece from "../pieces/GamePiece";
 
 export default function Square(props) {
-	const { pending, move, onClick, rowIndex, index, value } = props;
+	const { pending, move, onClick, rowIndex, index, piece } = props;
 	const theme = () => {
 		const temp = rowIndex % 2 === 0 ? index : index + 1;
 		return temp % 2 === 0 ? "odd" : "odd even";
@@ -14,12 +14,12 @@ export default function Square(props) {
 
 	return (
 		<div className={theme()} >
-			<GamePiece onClick={(x, y, value) => onClick(x, y, value)}
+			<GamePiece onClick={(x, y, piece) => onClick(x, y, piece)}
 					   pending={pending}
 					   move={move}
 					   rowIndex={rowIndex}
 					   index={index}
-					   value={value}
+					   piece={piece}
 			/>
 		</div>
 	);

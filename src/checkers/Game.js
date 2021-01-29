@@ -2,22 +2,25 @@ import React from 'react';
 import './Game.css';
 import 'fontsource-roboto';
 import Board from "./board/Board";
-import {cloneDeep} from "lodash"
+import { cloneDeep } from "lodash"
 import GameMenu from "./GameMenu";
 
 // ==================== END IMPORTS ====================
 
 export default function Game() {
+    // 0 -- selected piece
+    // 1 -- black piece
+    // 2 -- red piece
     const [history, setHistory] = React.useState([{
         board: [
-            [0, null, 0, null, 0, null, 0, null],
-            [null, 0, null, 0, null, 0, null, 0],
-            [0, null, 0, null, 0, null, 0, null],
+            [{value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null],
+            [null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}],
+            [{value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null, {value: 1, isKing: false}, null],
             [null, null, null, null, null, null, null, null],
             [null, null, null, null, null, null, null, null],
-            [null, 1, null, 1, null, 1, null, 1],
-            [1, null, 1, null, 1, null, 1, null],
-            [null, 1, null, 1, null, 1, null, 1],
+            [null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}],
+            [{value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null],
+            [null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}, null, {value: 2, isKing: false}],
         ],
     }]);
     const [move, setMove] = React.useState(0);
@@ -51,85 +54,124 @@ export default function Game() {
         setSelection(null);
     }
 
-    const calculateJumps = (x, y, value, mirror) => {
+    const calculateJumps = (x, y, piece, mirror) => {
+        console.log(piece)
+
         // set the piece
-        if (x < 8 && x > -1 && y < 8 && y > -1)
+        if (x < 8 && x > -1 && y < 8 && y > -1) {
             if (mirror[x][y] === null)
-                mirror[x][y] = 2;
+                mirror[x][y] = { value: 0 };
             else return;
+        }
 
         // black piece
-        if (value === 0) {
-            // to the right
-            if (x + 1 < 8 && y + 1 < 8) {
-                if (mirror[x + 1][y + 1] === 1) {
-                    calculateJumps(x + 2, y + 2, value, mirror);
+        if (piece.value === 1) {
+            if (x + 1 < 8) {
+                // to the right
+                if (mirror[x + 1][y + 1] && mirror[x + 1][y + 1].value === 2) {
+                    calculateJumps(x + 2, y + 2, piece, mirror);
+                }
+                // to the left
+                if (mirror[x + 1][y - 1] && mirror[x + 1][y - 1].value === 2) {
+                    calculateJumps(x + 2, y - 2, piece, mirror);
+                }
+                // king
+                if (piece.isKing) {
+                    // to the right
+                    if (mirror[x - 1][y + 1] && mirror[x - 1][y + 1].value === 2) {
+                        calculateJumps(x - 2, y + 2, piece, mirror);
+                    }
+                    // to the left
+                    if (mirror[x - 1][y - 1] && mirror[x - 1][y - 1].value === 2) {
+                        calculateJumps(x - 2, y - 2, piece, mirror);
+                    }
                 }
             }
-            // to the left
-            if (x + 1 < 8 && y - 1 > -1) {
-                if (mirror[x + 1][y - 1] === 1) {
-                    calculateJumps(x + 2, y - 2, value, mirror);
+        } else if (piece.value === 2) {
+            if (x - 1 > -1) {
+                // to the right
+                if (mirror[x - 1][y + 1] && mirror[x - 1][y + 1].value === 1) {
+                    calculateJumps(x - 2, y + 2, piece, mirror);
                 }
-            }
-        } else if (value === 1) {
-            // to the right
-            if (x - 1 > -1 && y + 1 < 8) {
-                if (mirror[x - 1][y + 1] === 0) {
-                    calculateJumps(x - 2, y + 2, value, mirror);
+                // to the left
+                if (mirror[x - 1][y - 1] && mirror[x - 1][y - 1].value === 1) {
+                    calculateJumps(x - 2, y - 2, piece, mirror);
                 }
-            }
-            // to the left
-            if (x - 1 > -1 && y - 1 > -1) {
-                if (mirror[x - 1][y - 1] === 0) {
-                    calculateJumps(x - 2, y - 2, value, mirror);
+                if (piece.isKing) {
+                    // to the right
+                    if (mirror[x + 1][y + 1] && mirror[x + 1][y + 1].value === 1) {
+                        calculateJumps(x + 2, y + 2, piece, mirror);
+                    }
+                    // to the left
+                    if (mirror[x + 1][y - 1] && mirror[x + 1][y - 1].value === 1) {
+                        calculateJumps(x + 2, y - 2, piece, mirror);
+                    }
                 }
             }
         } // red piece
     }
 
-    const calculateMoves = (x, y, value, mirror) => {
+    const calculateMoves = (x, y, piece, mirror) => {
         if (mirror) {
-           // black piece
-            if (value === 0) {
-                // right
-                if (x + 1 < 8 && y + 1 < 8) {
-                    // empty
-                    if (mirror[x + 1][y + 1] === null)
-                        mirror[x + 1][y + 1] = 2;
-                    // red opponent
-                    else if (mirror[x + 1][y + 1] === 1)
-                        calculateJumps(x + 2, y + 2, value, mirror);
+           // down
+            if (piece.value === 1 || piece.isKing) {
+                if (x + 1 < 8) {
+                    // right
+                    if (y + 1 < 8) {
+                        // empty
+                        if (mirror[x + 1][y + 1] === null)
+                            mirror[x + 1][y + 1] = { value: 0 };
+                        // black opponent for red king
+                        else if (mirror[x + 1][y + 1].value === 1 && piece.value === 2)
+                            calculateJumps(x + 2, y + 2, piece, mirror);
+                        // red opponent for a black piece/king
+                        else if (mirror[x + 1][y + 1].value === 2 && piece.value === 1)
+                            calculateJumps(x + 2, y + 2, piece, mirror);
+                    }
+                    // left
+                    if (y - 1 > -1) {
+                        // empty
+                        if (mirror[x + 1][y - 1] === null)
+                            mirror[x + 1][y - 1] = {value: 0};
+                        // black opponent for red king
+                        else if (mirror[x + 1][y - 1].value === 1 && piece.value === 2)
+                            calculateJumps(x + 2, y - 2, piece, mirror);
+                        // red opponent for a black piece/king
+                        else if (mirror[x + 1][y - 1].value === 2 && piece.value === 1)
+                            calculateJumps(x + 2, y - 2, piece, mirror);
+                    }
                 }
-                // left
-                if (x + 1 < 8 && y - 1 > -1) {
-                    // empty
-                    if (mirror[x + 1][y - 1] === null)
-                        mirror[x + 1][y - 1] = 2;
-                    // red opponent
-                    else if (mirror[x + 1][y - 1] === 1)
-                        calculateJumps(x + 2, y - 2, value, mirror);
+            }
+
+            // up
+            if (piece.value === 2 || piece.isKing) {
+                if (x - 1 > -1) {
+                    // right
+                    if (y + 1 < 8) {
+                        // empty
+                        if (mirror[x - 1][y + 1] === null)
+                            mirror[x - 1][y + 1] = { value: 0 };
+                        // black opponent for red king
+                        else if (mirror[x - 1][y + 1].value === 1 && piece.value === 2)
+                            calculateJumps(x - 2, y + 2, piece, mirror);
+                        // red opponent for a black piece/king
+                        else if (mirror[x - 1][y + 1].value === 2 && piece.value === 1)
+                            calculateJumps(x - 2, y + 2, piece, mirror);
+                    }
+                    // left
+                    if (y - 1 > -1) {
+                        // empty
+                        if (mirror[x - 1][y - 1] === null)
+                            mirror[x - 1][y - 1] = { value: 0 };
+                        // black opponent for red king
+                        else if (mirror[x - 1][y - 1].value === 1 && piece.value === 2)
+                            calculateJumps(x - 2, y - 2, piece, mirror);
+                        // red opponent for a black piece/king
+                        else if (mirror[x - 1][y - 1].value === 2 && piece.value === 1)
+                            calculateJumps(x - 2, y - 2, piece, mirror);
+                    }
                 }
-            } else if (value === 1) {
-                // right
-                if (x - 1 > -1 && y + 1 < 8) {
-                    // empty
-                    if (mirror[x - 1][y + 1] === null)
-                        mirror[x - 1][y + 1] = 2;
-                    // black opponent
-                    else if (mirror[x - 1][y + 1] === 0)
-                        calculateJumps(x - 2, y + 2, value, mirror);
-                }
-                // left
-                if (x - 1 > -1 && y - 1 > -1) {
-                    // empty
-                    if (mirror[x - 1][y - 1] === null)
-                        mirror[x - 1][y - 1] = 2;
-                    // black opponent
-                    else if (mirror[x - 1][y - 1] === 0)
-                        calculateJumps(x - 2, y - 2, value, mirror);
-                }
-            } // red piece
+            }
         }
     }
 
@@ -144,43 +186,161 @@ export default function Game() {
             setSelection(null);
             setMove(move - 1);
             setPending(false);
-
             return;
         }
 
-        // modifier so the loop can be generic
-        const xMod = selection.value === 0 ? 1 : -1;
-
-        history[move].board = cloneDeep(history[move - 1].board);
+        // copy of the board
+        history[move].board = cloneDeep(history[move].board);
 
         while (selection.x !== x) {
-            // the y value being === to the selected piece is an interesting corner case
-            // I decided to just have enough safe guards for a default -- easy way out? kinda
-            if (selection.y + 1 < 8 && y >= selection.y) {
-                // alert("doth clicked a piece down/up to the right ")
-                history[move].board[selection.x + xMod][selection.y + 1] = selection.value;
-                history[move].board[selection.x][selection.y] = null;
-                selection.y = selection.y + 1;
-                selection.x = selection.x + xMod;
-                continue;
-            }
+            // up
+            if (selection.x < x && selection.x + 1 < 8) {
+                // right move
+                if (y >= selection.y
+                    && selection.y + 1 < 8
+                    && history[move].board[selection.x + 1][selection.y + 1]
+                    && history[move].board[selection.x + 1][selection.y + 1].value === 0) {
 
-            if (selection.y - 1 > -1 && y <= selection.y) {
-                // alert("doth clicked a piece down/up to the left ")
-                history[move].board[selection.x + xMod][selection.y - 1] = selection.value;
-                history[move].board[selection.x][selection.y] = null;
-                selection.y = selection.y - 1;
-                selection.x = selection.x + xMod;
-                continue;
-            }
-        }
+                    // up move to a red king
+                    if (selection.x + 1 === 7 && selection.piece.value === 1)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x + 1][selection.y + 1] = selection.piece;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x += 1;
+                    selection.y += 1;
+                    continue;
+                } else if (y <= selection.y
+                    && selection.y - 1 > -1
+                    && history[move].board[selection.x + 1][selection.y - 1]
+                    && history[move].board[selection.x + 1][selection.y - 1].value === 0) {
+
+                    // up move to a red king
+                    if (selection.x + 1 === 7 && selection.piece.value === 1)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x + 1][selection.y - 1] = selection.piece;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x += 1;
+                    selection.y -= 1;
+                    continue;
+                } // left move
+
+                // right jump
+                if (y >= selection.y
+                    && selection.y + 2 < 8
+                    && history[move].board[selection.x + 2][selection.y + 2]
+                    && history[move].board[selection.x + 2][selection.y + 2].value === 0) {
+
+                    // down jump right to a black king
+                    if (selection.x - 2 === 0 && selection.piece.value === 1)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x + 2][selection.y + 2] = selection.piece;
+                    history[move].board[selection.x + 1][selection.y + 1] = null;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x += 2;
+                    selection.y += 2;
+                    continue;
+                } else if (y <= selection.y
+                    && selection.y - 2 > -1
+                    && history[move].board[selection.x + 2][selection.y - 2]
+                    && history[move].board[selection.x + 2][selection.y - 2].value === 0) {
+
+                    // down jump right to a black king
+                    if (selection.x - 2 === 0 && selection.piece.value === 1)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x + 2][selection.y - 2] = selection.piece;
+                    history[move].board[selection.x + 1][selection.y - 1] = null;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x += 2;
+                    selection.y -= 2;
+                    continue;
+                }
+            } // left jump
+
+            // down
+            if (selection.x > x && selection.x - 1 > -1) {
+                // right move
+                if (y >= selection.y
+                    && selection.y + 1 < 8
+                    && history[move].board[selection.x - 1][selection.y + 1]
+                    && history[move].board[selection.x - 1][selection.y + 1].value === 0) {
+
+                    // up move to a red king
+                    if (selection.x - 1 === 0 && selection.piece.value === 2)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x - 1][selection.y + 1] = selection.piece;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x -= 1;
+                    selection.y += 1;
+                    continue;
+                } else if (y <= selection.y
+                    && selection.y - 1 > -1
+                    && history[move].board[selection.x - 1][selection.y - 1]
+                    && history[move].board[selection.x - 1][selection.y - 1].value === 0) {
+
+                    // up move to a red king
+                    if (selection.x - 1 === 0 && selection.piece.value === 2)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x - 1][selection.y - 1] = selection.piece;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x -= 1;
+                    selection.y -= 1;
+                    continue;
+                } // left move
+
+                // right jump
+                if (y >= selection.y
+                    && selection.y + 2 < 8
+                    && history[move].board[selection.x - 2][selection.y + 2]
+                    && history[move].board[selection.x - 2][selection.y + 2].value === 0) {
+
+                    // down jump right to a red king
+                    if (selection.x - 2 === 0 && selection.piece.value === 2)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x - 2][selection.y + 2] = selection.piece;
+                    history[move].board[selection.x - 1][selection.y + 1] = null;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x -= 2;
+                    selection.y += 2;
+                    continue;
+                } else if (y <= selection.y
+                    && selection.y - 2 > -1
+                    && history[move].board[selection.x - 2][selection.y - 2]
+                    && history[move].board[selection.x - 2][selection.y - 2].value === 0) {
+
+                    // down jump left to a red king
+                    if (selection.x - 2 === 0 && selection.piece.value === 2)
+                        selection.piece.isKing = true;
+
+                    history[move].board[selection.x - 2][selection.y - 2] = selection.piece;
+                    history[move].board[selection.x - 1][selection.y - 1] = null;
+                    history[move].board[selection.x][selection.y] = null;
+                    selection.x -= 2;
+                    selection.y -= 2;
+                    continue;
+                }
+            } // left jump
+        } // while
+
+        // clean up the old selections
+        history[move].board = history[move].board.map((item) => {
+            return item.map((smallerItem) => {
+                return (smallerItem && smallerItem.value === 0) ? null : smallerItem
+            })
+        });
 
         setHistory(history);
         setSelection(null);
         setPending(false);
     }
 
-    const handleClick = (x, y, value) => {
+    const handleClick = (x, y, piece) => {
         // get a current copy of the history
         const past = move + 1 !== history.length
             ? history.slice(0, move + 1)
@@ -192,21 +352,23 @@ export default function Game() {
             const mirror = cloneDeep(past[move].board);
 
             // change the button
-            mirror[x][y] = 2;
+            mirror[x][y] = { value: 0, isKing: piece.isKing};
 
             // select the possible moves
-            calculateMoves(x, y, value, mirror);
+            calculateMoves(x, y, piece, mirror);
 
-            setSelection({ x: x, y: y, value: value});
+            setSelection({ x: x, y: y, piece: piece});
             setPending(true);
             setHistory([...past, {board: mirror}]);
             setMove(move + 1);
         } else {
-            movePiece(x, y, value)
+            movePiece(x, y, piece)
         }
     }
 
-    // ==================== END UTILITIES ====================
+    // ==================== END FUNCTIONS ====================
+
+    console.log(history)
 
     return (
         <div>
@@ -215,7 +377,7 @@ export default function Game() {
                     <Board board={history[move].board}
                            pending={pending}
                            move={move}
-                           onClick={(x, y, value) => handleClick(x, y, value)}
+                           onClick={(x, y, piece) => handleClick(x, y, piece)}
                     />
                 </div>
                 <div className="game-info">

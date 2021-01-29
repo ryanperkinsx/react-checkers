@@ -18,7 +18,7 @@ export default function Board(props) {
                         <Row key={index}
                              pending={pending}
                              move={move}
-                             onClick={(x, y, value) => onClick(x, y, value)}
+                             onClick={(x, y, piece) => onClick(x, y, piece)}
                              rowArray={arr}
                              rowIndex={index} />
                     );
