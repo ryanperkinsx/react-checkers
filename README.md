@@ -1,12 +1,12 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Checkers
 
-## Available Scripts
+An incomplete game of checkers in pure React :D
 
-In the project directory, you can run:
+I'll finish the logic eventually.. 
+
+# React 
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ### `npm start`
 
